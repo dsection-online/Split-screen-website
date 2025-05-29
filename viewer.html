@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Split Screen Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .screen {
+      flex: 1;
+      position: relative;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+    }
+    button {
+      margin: 0 5px;
+    }
+    .separator {
+      height: 6px;
+      background: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen" id="topScreen">
+    <div class="controls">
+      <button onclick="prevVideo('top')">⏮️</button>
+      <button onclick="nextVideo('top')">⏭️</button>
+    </div>
+    <iframe id="topFrame" allow="autoplay"></iframe>
+  </div>
+  <div class="separator"></div>
+  <div class="screen" id="bottomScreen">
+    <div class="controls">
+      <button onclick="prevVideo('bottom')">⏮️</button>
+      <button onclick="nextVideo('bottom')">⏭️</button>
+    </div>
+    <iframe id="bottomFrame" allow="autoplay"></iframe>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const topMode = urlParams.get('topMode');
+    const bottomMode = urlParams.get('bottomMode');
+    const mute = urlParams.get('mute');
+
+    let topVideos = [];
+    let bottomVideos = [];
+    let topIndex = 0;
+    let bottomIndex = 0;
+
+    if (topMode === 'playlist') {
+      for (let i = 1; i <= 5; i++) {
+        const url = urlParams.get('topPlaylist' + i);
+        if (url) topVideos.push(url);
+      }
+    } else {
+      topVideos.push(urlParams.get('topUrl'));
+    }
+
+    if (bottomMode === 'playlist') {
+      for (let i = 1; i <= 5; i++) {
+        const url = urlParams.get('bottomPlaylist' + i);
+        if (url) bottomVideos.push(url);
+      }
+    } else {
+      bottomVideos.push(urlParams.get('bottomUrl'));
+    }
+
+    function updateFrame(screen, index) {
+      const frame = document.getElementById(screen + 'Frame');
+      const videos = screen === 'top' ? topVideos : bottomVideos;
+      if (frame && videos[index]) {
+        frame.src = videos[index];
+      }
+    }
+
+    function nextVideo(screen) {
+      if (screen === 'top') {
+        topIndex = (topIndex + 1) % topVideos.length;
+        updateFrame('top', topIndex);
+      } else {
+        bottomIndex = (bottomIndex + 1) % bottomVideos.length;
+        updateFrame('bottom', bottomIndex);
+      }
+    }
+
+    function prevVideo(screen) {
+      if (screen === 'top') {
+        topIndex = (topIndex - 1 + topVideos.length) % topVideos.length;
+        updateFrame('top', topIndex);
+      } else {
+        bottomIndex = (bottomIndex - 1 + bottomVideos.length) % bottomVideos.length;
+        updateFrame('bottom', bottomIndex);
+      }
+    }
+
+    // Set initial frames
+    updateFrame('top', topIndex);
+    updateFrame('bottom', bottomIndex);
+
+    // Mute handling (best-effort; true mute needs JS control over video players like YouTube API)
+    if (mute === 'top') {
+      document.getElementById('topFrame').setAttribute('allow', '');
+    } else if (mute === 'bottom') {
+      document.getElementById('bottomFrame').setAttribute('allow', '');
+    }
+  </script>
+</body>
+</html>

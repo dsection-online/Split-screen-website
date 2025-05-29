@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Split Screen Setup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #121212;
+      color: white;
+      padding: 20px;
+    }
+    form {
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    select, button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+    }
+    .playlist-group {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Split Screen Viewer Setup</h1>
+  <form action="viewer.html" method="GET">
+    <label>Top Screen Mode:</label>
+    <select name="topMode" id="topMode" onchange="togglePlaylist('top')">
+      <option value="video">Single Video/Website</option>
+      <option value="playlist">YouTube Playlist (5 videos)</option>
+    </select>
+    <div id="topVideo">
+      <label>Top Screen URL:</label>
+      <input type="text" name="topUrl" placeholder="Enter video or website URL">
+    </div>
+    <div id="topPlaylist" class="playlist-group">
+      <label>Top Playlist Video 1:</label>
+      <input type="text" name="topPlaylist1">
+      <label>Top Playlist Video 2:</label>
+      <input type="text" name="topPlaylist2">
+      <label>Top Playlist Video 3:</label>
+      <input type="text" name="topPlaylist3">
+      <label>Top Playlist Video 4:</label>
+      <input type="text" name="topPlaylist4">
+      <label>Top Playlist Video 5:</label>
+      <input type="text" name="topPlaylist5">
+    </div>
+
+    <label>Bottom Screen Mode:</label>
+    <select name="bottomMode" id="bottomMode" onchange="togglePlaylist('bottom')">
+      <option value="video">Single Video/Website</option>
+      <option value="playlist">YouTube Playlist (5 videos)</option>
+    </select>
+    <div id="bottomVideo">
+      <label>Bottom Screen URL:</label>
+      <input type="text" name="bottomUrl" placeholder="Enter video or website URL">
+    </div>
+    <div id="bottomPlaylist" class="playlist-group">
+      <label>Bottom Playlist Video 1:</label>
+      <input type="text" name="bottomPlaylist1">
+      <label>Bottom Playlist Video 2:</label>
+      <input type="text" name="bottomPlaylist2">
+      <label>Bottom Playlist Video 3:</label>
+      <input type="text" name="bottomPlaylist3">
+      <label>Bottom Playlist Video 4:</label>
+      <input type="text" name="bottomPlaylist4">
+      <label>Bottom Playlist Video 5:</label>
+      <input type="text" name="bottomPlaylist5">
+    </div>
+
+    <label>Mute Options:</label>
+    <select name="mute">
+      <option value="none">None</option>
+      <option value="top">Mute Top</option>
+      <option value="bottom">Mute Bottom</option>
+    </select>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    function togglePlaylist(screen) {
+      const mode = document.getElementById(screen + 'Mode').value;
+      document.getElementById(screen + 'Video').style.display = mode === 'video' ? 'block' : 'none';
+      document.getElementById(screen + 'Playlist').style.display = mode === 'playlist' ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>
